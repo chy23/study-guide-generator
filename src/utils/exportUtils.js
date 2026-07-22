@@ -16,11 +16,17 @@ export function getExportHTMLContent(lesson, selections, isTeacherMode) {
   const selectedFillIn = lesson.fillIn.filter((_, i) => selections.fillIn.has(i));
   const selectedQuestions = lesson.questions.filter((_, i) => selections.questions.has(i));
 
-  const wordBank = shuffleArray(selectedFillIn.map(item => item.answer));
+  const unselectedFillIn = lesson.fillIn.filter((_, i) => !selections.fillIn.has(i));
+  const distractors = [...unselectedFillIn].sort(() => 0.5 - Math.random()).slice(0, 2);
+  const wordBankAnswers = [...selectedFillIn.map(item => item.answer), ...distractors.map(item => item.answer)];
+
+  const wordBank = shuffleArray(wordBankAnswers);
 
   const generatePage = (isTeacher) => {
     // Task 1
     const pCountText = isTeacher ? `<span style="color:red; font-weight:bold;">${lesson.paragraphs}</span>` : '＿＿＿';
+    const structureText = isTeacher ? `<div style="color:red; font-weight:bold; margin-top: 5px; line-height: 1.6;">${lesson.structure || ''}</div>` : '<br/><br/><br/><br/>';
+    const criteriaText = isTeacher ? `<div style="color:red; font-weight:bold; margin-top: 5px; line-height: 1.6;">${lesson.criteria || ''}</div>` : '';
 
     // Task 2
     let vocabRows = '';
@@ -95,7 +101,9 @@ export function getExportHTMLContent(lesson, selections, isTeacherMode) {
         <div style="font-weight:bold; margin-bottom: 10px;">課前任務 1、讀讀看</div>
         <div style="margin-bottom: 25px;">
           (1) 先朗讀課文三遍，標示出標點符號。；！？。 &nbsp;&nbsp;&nbsp;&nbsp; (2) 自然段有 ${pCountText} 段。<br/>
-          (3) 圈出不懂的語詞、找重點句、句型、修辭。劃線標註段落重點句。
+          (3) 圈出不懂的語詞、找重點句、句型、修辭。劃線標註段落重點句。<br/>
+          (4) 結構說明：${structureText}
+          ${isTeacher ? `<div style="margin-top: 8px;">(5) 判定標準：${criteriaText}</div>` : ''}
         </div>
 
         <div style="font-weight:bold; margin-bottom: 10px;">課前任務 2、暖身大挑戰(答題時盡量不看課本，測試自己)在空格內填入 語詞加注音</div>
@@ -139,24 +147,24 @@ export function getExportHTMLContent(lesson, selections, isTeacherMode) {
   `;
 }
 
-export function exportToPDF(lesson, selections, filename) {
+export function exportToPDF(lesson, selections, filename, paperSize = 'a4', margin = 10) {
   const htmlContent = getExportHTMLContent(lesson, selections, false); // generatePage internally does both
 
   const element = document.createElement('div');
   element.innerHTML = htmlContent;
 
   const opt = {
-    margin:       10,
+    margin:       margin,
     filename:     filename || `${lesson.title}_預習講義.pdf`,
     image:        { type: 'jpeg', quality: 0.98 },
     html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    jsPDF:        { unit: 'mm', format: paperSize, orientation: 'portrait' }
   };
 
   html2pdf().set(opt).from(element).save();
 }
 
-export function exportToWord(lesson, selections, filename) {
+export function exportToWord(lesson, selections, filename, paperSize = 'A4', margin = '2cm') {
   const htmlContent = getExportHTMLContent(lesson, selections, false);
   
   const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -164,7 +172,7 @@ export function exportToWord(lesson, selections, filename) {
       <meta charset='utf-8'>
       <style>
         body { font-family: '標楷體', 'BiauKai', 'DFKai-SB'; }
-        @page { size: A4; margin: 2cm; }
+        @page { size: ${paperSize}; margin: ${margin}; }
       </style>
     </head><body>`;
   const footer = `</body></html>`;

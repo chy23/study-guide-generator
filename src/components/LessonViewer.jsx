@@ -68,7 +68,9 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
   };
 
   const selectedFillIn = lesson.fillIn.filter((_, i) => selections.fillIn.has(i));
-  const wordBank = selectedFillIn.map(item => item.answer);
+  const unselectedFillIn = lesson.fillIn.filter((_, i) => !selections.fillIn.has(i));
+  const distractors = unselectedFillIn.slice(0, 2).map(item => item.answer);
+  const wordBank = [...selectedFillIn.map(item => item.answer), ...distractors].sort((a, b) => a.localeCompare(b, 'zh-TW'));
 
   return (
     <div className="max-w-5xl mx-auto" style={{ fontFamily: "'標楷體', 'BiauKai', 'DFKai-SB', sans-serif" }}>
@@ -95,8 +97,23 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
             任務一：讀讀看
           </h2>
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-xl space-y-3">
-            <p>1. 本課自然段共有 {isTeacherMode ? <span className="text-red-600 font-bold px-2">{lesson.paragraphs}</span> : '＿＿'} 段。</p>
-            <p>2. 本課意義段共有 {isTeacherMode ? <span className="text-red-600 font-bold px-2">{lesson.parts}</span> : '＿＿'} 段。</p>
+            <p>(1) 先朗讀課文三遍，標示出標點符號。；！？。</p>
+            <p>(2) 自然段有 {isTeacherMode ? <span className="text-red-600 font-bold px-2">{lesson.paragraphs}</span> : '＿＿＿'} 段。</p>
+            <p>(3) 圈出不懂的語詞、找重點句、句型、修辭。劃線標註段落重點句。</p>
+            <div className="pt-2">
+              <p>(4) 結構說明：</p>
+              {isTeacherMode ? (
+                <div className="text-red-600 font-bold mt-2 ml-6 leading-relaxed">{lesson.structure}</div>
+              ) : (
+                <div className="h-24 bg-slate-50 border border-dashed border-slate-300 rounded mt-2 ml-6"></div>
+              )}
+            </div>
+            {isTeacherMode && lesson.criteria && (
+              <div className="pt-2">
+                <p>(5) 判定標準：</p>
+                <div className="text-red-600 font-bold mt-2 ml-6 leading-relaxed">{lesson.criteria}</div>
+              </div>
+            )}
           </div>
         </section>
 
