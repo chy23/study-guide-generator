@@ -1,0 +1,154 @@
+import React from 'react';
+
+const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) => {
+  if (!lesson) return <div className="p-8 text-center text-slate-500">請選擇一課</div>;
+
+  const renderVocab = (v, index) => {
+    const isSelected = selections.vocab.has(index);
+    return (
+      <div key={index} className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${isSelected ? 'border-blue-200 bg-white shadow-sm' : 'border-slate-200 bg-slate-50 opacity-40 grayscale hover:opacity-70'}`}>
+        <input type="checkbox" checked={isSelected} onChange={() => toggleSelection('vocab', index)} className="mt-1.5 w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer" />
+        <div>
+          <span className="font-bold text-lg">{v.word}</span>
+          <div className="mt-2 text-lg">
+            {isTeacherMode ? (
+              <span className="text-red-600 font-bold underline decoration-red-600 decoration-2 underline-offset-4">{v.meaning}</span>
+            ) : (
+              <span className="text-slate-400">＿＿＿＿＿＿＿＿＿＿＿＿＿＿</span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderFillIn = (item, index) => {
+    const isSelected = selections.fillIn.has(index);
+    const parts = item.sentence.split(/（\s*）/);
+    
+    return (
+      <div key={index} className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${isSelected ? 'border-blue-200 bg-white shadow-sm' : 'border-slate-200 bg-slate-50 opacity-40 grayscale hover:opacity-70'}`}>
+        <input type="checkbox" checked={isSelected} onChange={() => toggleSelection('fillIn', index)} className="mt-1 w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer" />
+        <div className="text-lg leading-loose">
+          {index + 1}. {parts.map((part, i) => (
+            <React.Fragment key={i}>
+              {part}
+              {i < parts.length - 1 && (
+                <span>
+                  （{isTeacherMode ? <span className="text-red-600 font-bold mx-1">{item.answer}</span> : <span className="mx-4">　</span>}）
+                </span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderQuestion = (q, index) => {
+    const isSelected = selections.questions.has(index);
+    return (
+      <div key={index} className={`flex items-start gap-3 p-5 rounded-xl border-2 transition-all ${isSelected ? 'border-blue-200 bg-white shadow-sm' : 'border-slate-200 bg-slate-50 opacity-40 grayscale hover:opacity-70'}`}>
+        <input type="checkbox" checked={isSelected} onChange={() => toggleSelection('questions', index)} className="mt-1 w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer" />
+        <div className="flex-1">
+          <div className="flex items-center flex-wrap gap-2 mb-3">
+            <span className="font-bold text-lg">{index + 1}. {q.q}</span>
+            {isTeacherMode && <span className="text-sm bg-red-100 text-red-700 px-2.5 py-0.5 rounded-md font-bold shrink-0">【{q.type}】</span>}
+          </div>
+          {isTeacherMode ? (
+            <div className="text-red-600 font-bold bg-red-50 p-4 rounded-lg border border-red-100 text-lg">
+              答：{q.a}
+            </div>
+          ) : (
+            <div className="h-28 bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg w-full"></div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const selectedFillIn = lesson.fillIn.filter((_, i) => selections.fillIn.has(i));
+  const wordBank = selectedFillIn.map(item => item.answer);
+
+  return (
+    <div className="max-w-5xl mx-auto" style={{ fontFamily: "'標楷體', 'BiauKai', 'DFKai-SB', sans-serif" }}>
+      {/* Header */}
+      <div className="text-center mb-10 pb-6 border-b-2 border-slate-200">
+        <h1 className="text-3xl md:text-4xl font-bold mb-6 text-slate-800">
+          115六上國語預習講義 翰林版 第 {lesson.id} 課 {lesson.title} 作者：{lesson.author} 
+          <span className={isTeacherMode ? 'text-red-600 ml-3' : 'text-slate-500 ml-3'}>
+            （{isTeacherMode ? '教用版' : '學用版'}）
+          </span>
+        </h1>
+        <div className="flex justify-end gap-8 text-xl text-slate-700">
+          <span>班級：_______</span>
+          <span>座號：_______</span>
+          <span>姓名：_____________</span>
+        </div>
+      </div>
+
+      <div className="space-y-12">
+        {/* Task 1 */}
+        <section>
+          <h2 className="text-2xl font-bold mb-5 flex items-center gap-3 text-slate-800">
+            <span className="bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-xl shadow-md">1</span>
+            任務一：讀讀看
+          </h2>
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-xl space-y-3">
+            <p>1. 本課自然段共有 {isTeacherMode ? <span className="text-red-600 font-bold px-2">{lesson.paragraphs}</span> : '＿＿'} 段。</p>
+            <p>2. 本課意義段共有 {isTeacherMode ? <span className="text-red-600 font-bold px-2">{lesson.parts}</span> : '＿＿'} 段。</p>
+          </div>
+        </section>
+
+        {/* Task 2 */}
+        <section>
+          <div className="flex justify-between items-center mb-5">
+            <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-800">
+              <span className="bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-xl shadow-md">2</span>
+              任務二：語詞解釋
+            </h2>
+            <span className="text-sm font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">點擊核取方塊可排除題目</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {lesson.vocab.map((v, index) => renderVocab(v, index))}
+          </div>
+        </section>
+
+        {/* Task 3 */}
+        <section>
+          <div className="flex justify-between items-center mb-5">
+            <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-800">
+              <span className="bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-xl shadow-md">3</span>
+              任務三：語詞選填
+            </h2>
+            <span className="text-sm font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">點擊核取方塊可排除題目</span>
+          </div>
+          {wordBank.length > 0 && (
+            <div className="border border-slate-400 rounded-xl p-5 mb-5 text-2xl leading-loose bg-white shadow-sm flex flex-wrap gap-8 justify-center">
+              {wordBank.map((word, i) => <span key={i} className="font-bold">{word}</span>)}
+            </div>
+          )}
+          <div className="space-y-4">
+            {lesson.fillIn.map((item, index) => renderFillIn(item, index))}
+          </div>
+        </section>
+
+        {/* Task 4 */}
+        <section>
+          <div className="flex justify-between items-center mb-5">
+            <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-800">
+              <span className="bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-xl shadow-md">4</span>
+              任務四：文意預習
+            </h2>
+            <span className="text-sm font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">點擊核取方塊可排除題目</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {lesson.questions.map((q, index) => renderQuestion(q, index))}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default LessonViewer;
