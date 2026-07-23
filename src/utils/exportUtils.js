@@ -58,6 +58,7 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
            fillcolor="silver" stroked="f">
            <v:fill opacity=".25"/>
            <v:textpath style="font-family:'標楷體';font-size:87pt;font-weight:bold;font-style:italic" string="彙整自楊家驊老師"/>
+           <o:lock v:ext="edit" position="t" selection="t" rotation="t" size="t" text="t" delete="t"/>
           </v:shape>
           <![endif]-->
         </p>
