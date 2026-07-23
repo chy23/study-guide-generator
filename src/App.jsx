@@ -58,7 +58,7 @@ function App() {
 
   const handleConfirmExport = () => {
     const paddedId = String(currentLesson.id).padStart(2, '0');
-    const filename = `${paddedId}_第${currentLesson.id}課_${currentLesson.title}_彙整版`;
+    const filename = `${paddedId}第${currentLesson.id}課預習單_${currentLesson.title}_彙整版`;
     const margin = margins[marginSetting];
     
     // Export to Word without watermark
