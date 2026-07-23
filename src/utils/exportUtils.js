@@ -77,7 +77,16 @@ export function getExportHTMLContent(lesson, selections, isTeacherMode) {
         const answer = isTeacher 
           ? `<div style="color:red; margin-top: 8px;">${q.a}</div>` 
           : `<br/><br/><br/><br/><br/>`;
-        return `<div>(${idx}) ${q.q}</div><div>答：${answer}</div>`;
+          
+        let tagBg = '#475569'; // default slate-600
+        if (q.type === '提取訊息') tagBg = '#2563eb'; // blue-600
+        if (q.type === '推論訊息') tagBg = '#f97316'; // orange-500
+        if (q.type === '詮釋整合') tagBg = '#16a34a'; // green-600
+        if (q.type === '比較評估') tagBg = '#9333ea'; // purple-600
+        
+        const tag = isTeacher ? `<span style="background-color:${tagBg}; color:white; padding: 2px 6px; font-size: 12px; margin-left: 6px; border-radius: 2px; font-weight: bold; white-space: nowrap;">${q.type}</span>` : '';
+        
+        return `<div><span style="font-weight:bold;">(${idx}) ${q.q}</span>${tag}</div><div>答：${answer}</div>`;
       };
 
       questionRows += `

@@ -62,7 +62,14 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
         <div className="flex-1">
           <div className="flex items-center flex-wrap gap-2 mb-3">
             <span className="font-bold text-lg">{getDisplayIndex('questions', index)}{q.q}</span>
-            {isTeacherMode && <span className="text-sm bg-red-100 text-red-700 px-2.5 py-0.5 rounded-md font-bold shrink-0">【{q.type}】</span>}
+            {isTeacherMode && (
+              <span className={`text-sm text-white px-2.5 py-0.5 font-bold shrink-0 shadow-sm ${
+                q.type === '提取訊息' ? 'bg-blue-600' :
+                q.type === '推論訊息' ? 'bg-orange-500' :
+                q.type === '詮釋整合' ? 'bg-green-600' :
+                q.type === '比較評估' ? 'bg-purple-600' : 'bg-slate-600'
+              }`}>{q.type}</span>
+            )}
           </div>
           {isTeacherMode ? (
             <div className="text-red-600 font-bold bg-red-50 p-4 rounded-lg border border-red-100 text-lg">
