@@ -44,7 +44,9 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
               {part}
               {i < parts.length - 1 && (
                 <span>
-                  （{isTeacherMode ? <span className="text-red-600 font-bold mx-1">{item.answer}</span> : <span className="mx-4">　</span>}）
+                  {isTeacherMode ? `( ` : ''}
+                  {isTeacherMode ? <span className="text-red-600 font-bold mx-1">{item.answer}</span> : <span className="text-slate-400">（　　　　　　　）</span>}
+                  {isTeacherMode ? ` )` : ''}
                 </span>
               )}
             </React.Fragment>

@@ -105,7 +105,7 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
       let sentence = item.sentence;
       const blank = isTeacher 
         ? `( <span style="color:red; font-weight:bold;">${item.answer}</span> )` 
-        : `(       )`;
+        : `（　　　　　　　）`;
       sentence = sentence.replace(/（\s*）|\(\s*\)/g, blank);
       fillInHtml += `<div style="margin-bottom: 12px; line-height: 1.8;">(${index + 1}) ${sentence}</div>`;
     });
