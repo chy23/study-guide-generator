@@ -20,9 +20,9 @@ function App() {
 
 
   const margins = {
-    normal: '2.54cm 3.18cm',
-    moderate: '1.91cm 1.91cm',
-    narrow: '1.27cm'
+    normal: '2.54cm 3.18cm 2.54cm 3.18cm',
+    moderate: '1.91cm 1.91cm 1.91cm 1.91cm',
+    narrow: '1.27cm 1.27cm 1.27cm 1.27cm'
   };
 
   // Initialize selections when lesson changes
@@ -57,7 +57,8 @@ function App() {
   };
 
   const handleConfirmExport = () => {
-    const filename = `第${currentLesson.id}課_${currentLesson.title}_${isTeacherMode ? '教用版' : '學用版'}`;
+    const paddedId = String(currentLesson.id).padStart(2, '0');
+    const filename = `${paddedId}_第${currentLesson.id}課_${currentLesson.title}_彙整版`;
     const margin = margins[marginSetting];
     
     // Export to Word without watermark
