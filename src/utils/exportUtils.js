@@ -22,20 +22,54 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
 
   const wordBank = shuffleArray(wordBankAnswers);
   
-  let watermarkCSS = '';
+  let vmlWatermark = '';
   if (showWatermark) {
-    let h = 297;
-    if (paperSize.toLowerCase() === 'b4') h = 353;
-    if (paperSize.toLowerCase() === 'a3') h = 420;
-    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1414'><text x='50%' y='50%' transform='rotate(-45 500 707)' text-anchor='middle' font-size='87pt' font-weight='bold' font-style='italic' fill='gray' fill-opacity='0.25' font-family='sans-serif'>彙整自楊家驊老師</text></svg>`;
-    const encoded = encodeURIComponent(svg).replace(/'/g, '%27').replace(/"/g, '%22');
-    watermarkCSS = `background-image: url("data:image/svg+xml;charset=utf-8,${encoded}"); background-repeat: repeat-y; background-position: center top; background-size: 100% ${h}mm;`;
+    vmlWatermark = `
+      <div style="mso-element:header" id="h1">
+        <p class="MsoHeader">
+          <!--[if gte vml 1]>
+          <v:shapetype id="_x0000_t136" coordsize="21600,21600" o:spt="136" adj="10800" path="m@7,l@8,m@5,21600l@6,21600e">
+           <v:formulas>
+            <v:f eqn="sum #0 0 10800"/>
+            <v:f eqn="prod #0 2 1"/>
+            <v:f eqn="sum 21600 0 @1"/>
+            <v:f eqn="sum 0 0 @2"/>
+            <v:f eqn="sum 21600 0 @3"/>
+            <v:f eqn="if @0 @3 0"/>
+            <v:f eqn="if @0 21600 @1"/>
+            <v:f eqn="if @0 0 @2"/>
+            <v:f eqn="if @0 @4 21600"/>
+            <v:f eqn="mid @5 @6"/>
+            <v:f eqn="mid @8 @5"/>
+            <v:f eqn="mid @7 @8"/>
+            <v:f eqn="mid @6 @7"/>
+            <v:f eqn="sum @6 0 @5"/>
+           </v:formulas>
+           <v:path textpathok="t" o:connecttype="custom" o:connectlocs="@9,0;@10,10800;@11,21600;@12,10800" o:connectangles="270,180,90,0"/>
+           <v:textpath on="t" fitshape="t"/>
+           <v:handles>
+            <v:h position="#0,bottomRight" xrange="6629,14971"/>
+           </v:handles>
+           <o:lock v:ext="edit" text="t" shapetype="t"/>
+          </v:shapetype>
+          <v:shape id="WaterMarkObject" o:spid="_x0000_s101" type="#_x0000_t136"
+           style="position:absolute;left:0;text-align:left;margin-left:-20pt;
+           margin-top:200pt;width:500pt;height:200pt;rotation:-45;z-index:-251657216;
+           mso-position-horizontal:center;mso-position-horizontal-relative:margin;
+           mso-position-vertical:center;mso-position-vertical-relative:margin"
+           fillcolor="silver" stroked="f">
+           <v:fill opacity=".25"/>
+           <v:textpath style="font-family:'標楷體';font-size:87pt;font-weight:bold;font-style:italic" string="彙整自楊家驊老師"/>
+          </v:shape>
+          <![endif]-->
+        </p>
+      </div>
+    `;
   }
 
   const generatePage = (isTeacher) => {
     // Task 1
     const pCountText = isTeacher ? `<span style="color:red; font-weight:bold;">${lesson.paragraphs}</span>` : '＿＿＿';
-    const structureText = isTeacher ? `<div style="color:red; font-weight:bold; margin-top: 5px; line-height: 1.6;">${lesson.structure || ''}</div>` : '<br/><br/><br/><br/>';
     const criteriaText = isTeacher ? `<div style="color:red; font-weight:bold; margin-top: 5px; line-height: 1.6;">${lesson.criteria || ''}</div>` : '';
 
     // Task 2
@@ -108,7 +142,8 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
     }
 
     return `
-      <div style="font-family: '標楷體', 'BiauKai', 'DFKai-SB'; margin: 0 auto; width: 100%; max-width: 800px; color: #000; line-height: 1.6; font-size: 14pt; min-height: 100vh; ${watermarkCSS}">
+      ${vmlWatermark}
+      <div style="font-family: '標楷體', 'BiauKai', 'DFKai-SB'; margin: 0 auto; width: 100%; max-width: 800px; color: #000; line-height: 1.6; font-size: 14pt; min-height: 100vh;">
         
         <div style="text-align: center; font-size: 18pt; font-weight: bold; margin-bottom: 10px;">
           115 六上國語預習講義 翰林版 第 ${lesson.id} 課 &nbsp;&nbsp;${lesson.title}&nbsp;&nbsp; 作者 ： ${lesson.author}
@@ -121,7 +156,7 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
         <div style="margin-bottom: 25px;">
           (1) 先朗讀課文三遍，標示出標點符號。；！？。 &nbsp;&nbsp;&nbsp;&nbsp; (2) 自然段有 ${pCountText} 段。<br/>
           (3) 圈出不懂的語詞、找重點句、句型、修辭。劃線標註段落重點句。<br/>
-          (4) 結構說明：${structureText}
+          ${isTeacher ? `(4) 結構說明：<div style="color:red; font-weight:bold; margin-top: 5px; line-height: 1.6;">${lesson.structure || ''}</div>` : ''}
           ${isTeacher ? `<div style="margin-top: 8px;">(5) 判定標準：${criteriaText}</div>` : ''}
         </div>
 
@@ -170,12 +205,21 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
 export function exportToWord(lesson, selections, filename, paperSize = 'A4', margin = '2cm', showWatermark = true) {
   const htmlContent = getExportHTMLContent(lesson, selections, false, showWatermark, paperSize);
   
-  const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+  const header = `<html xmlns:v="urn:schemas-microsoft-com:vml"
+    xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:w="urn:schemas-microsoft-com:office:word"
+    xmlns="http://www.w3.org/TR/REC-html40">
     <head>
       <meta charset='utf-8'>
+      <!--[if gte mso 9]><xml>
+       <w:WordDocument>
+        <w:View>Print</w:View>
+        <w:Zoom>100</w:Zoom>
+       </w:WordDocument>
+      </xml><![endif]-->
       <style>
         body { font-family: '標楷體', 'BiauKai', 'DFKai-SB'; }
-        @page { size: ${paperSize}; margin: ${margin}; }
+        @page { size: ${paperSize}; margin: ${margin}; mso-header: h1; }
       </style>
     </head><body>`;
   const footer = `</body></html>`;
