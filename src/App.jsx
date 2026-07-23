@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { FileText, FileDown, BookOpen, GraduationCap, Settings2, X } from 'lucide-react'
 import LessonViewer from './components/LessonViewer'
 import { lessonsData } from './data/lessonsData'
-import { exportToPDF, exportToWord } from './utils/exportUtils'
+import { exportToWord } from './utils/exportUtils'
 
 function App() {
   const [currentLesson, setCurrentLesson] = useState(lessonsData[0]);
@@ -15,7 +15,6 @@ function App() {
 
   // Modal State
   const [showExportModal, setShowExportModal] = useState(false);
-  const [exportType, setExportType] = useState('pdf');
   const [paperSize, setPaperSize] = useState('A4');
   const [marginSetting, setMarginSetting] = useState('normal');
   const [password, setPassword] = useState('');
@@ -53,8 +52,7 @@ function App() {
     });
   };
 
-  const handleOpenExportModal = (type) => {
-    setExportType(type);
+  const handleOpenExportModal = () => {
     setShowExportModal(true);
   };
 
@@ -63,12 +61,8 @@ function App() {
     const showWatermark = password !== '@6912';
     const margin = margins[marginSetting];
     
-    if (exportType === 'pdf') {
-      const marginMm = marginSetting === 'normal' ? 25.4 : marginSetting === 'moderate' ? 19.1 : 12.7;
-      exportToPDF(currentLesson, selections, filename, paperSize.toLowerCase(), marginMm, showWatermark);
-    } else {
-      exportToWord(currentLesson, selections, filename, paperSize, margin, showWatermark);
-    }
+    exportToWord(currentLesson, selections, filename, paperSize, margin, showWatermark);
+    
     setShowExportModal(false);
     setPassword('');
   };
@@ -119,19 +113,11 @@ function App() {
             </div>
 
             <button 
-              onClick={() => handleOpenExportModal('word')}
-              className="flex items-center gap-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-5 py-2 rounded-lg text-sm font-bold transition-colors border border-indigo-200"
+              onClick={handleOpenExportModal}
+              className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-5 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm"
             >
               <FileText className="w-4 h-4" />
               匯出 Word
-            </button>
-            
-            <button 
-              onClick={() => handleOpenExportModal('pdf')}
-              className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-5 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm"
-            >
-              <FileDown className="w-4 h-4" />
-              匯出 PDF
             </button>
           </div>
         </div>
@@ -155,8 +141,8 @@ function App() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
             <div className="flex justify-between items-center p-6 border-b border-slate-100">
               <h3 className="text-xl font-bold flex items-center gap-2">
-                {exportType === 'pdf' ? <FileDown className="w-5 h-5 text-blue-600" /> : <FileText className="w-5 h-5 text-indigo-600" />}
-                匯出 {exportType === 'pdf' ? 'PDF' : 'Word'} 設定
+                <FileText className="w-5 h-5 text-blue-600" />
+                匯出 Word 設定
               </h3>
               <button onClick={() => setShowExportModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
                 <X className="w-6 h-6" />

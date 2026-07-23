@@ -166,22 +166,6 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
   `;
 }
 
-export function exportToPDF(lesson, selections, filename, paperSize = 'a4', margin = 10, showWatermark = true) {
-  const htmlContent = getExportHTMLContent(lesson, selections, false, showWatermark, paperSize); // generatePage internally does both
-
-  const element = document.createElement('div');
-  element.innerHTML = htmlContent;
-
-  const opt = {
-    margin:       margin,
-    filename:     filename || `${lesson.title}_預習講義.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'mm', format: paperSize, orientation: 'portrait' }
-  };
-
-  html2pdf().set(opt).from(element).save();
-}
 
 export function exportToWord(lesson, selections, filename, paperSize = 'A4', margin = '2cm', showWatermark = true) {
   const htmlContent = getExportHTMLContent(lesson, selections, false, showWatermark, paperSize);
