@@ -22,7 +22,7 @@ function App() {
   const margins = {
     normal: '2.54cm 3.18cm',
     moderate: '1.91cm 1.91cm',
-    narrow: '1.27cm 1.27cm'
+    narrow: '1.27cm'
   };
 
   // Initialize selections when lesson changes
