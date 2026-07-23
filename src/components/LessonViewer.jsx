@@ -3,13 +3,22 @@ import React from 'react';
 const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) => {
   if (!lesson) return <div className="p-8 text-center text-slate-500">請選擇一課</div>;
 
+  const getDisplayIndex = (type, originalIndex) => {
+    if (!selections[type].has(originalIndex)) return '';
+    let count = 0;
+    for (let i = 0; i <= originalIndex; i++) {
+      if (selections[type].has(i)) count++;
+    }
+    return `${count}. `;
+  };
+
   const renderVocab = (v, index) => {
     const isSelected = selections.vocab.has(index);
     return (
       <div key={index} className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${isSelected ? 'border-blue-200 bg-white shadow-sm' : 'border-slate-200 bg-slate-50 opacity-40 grayscale hover:opacity-70'}`}>
         <input type="checkbox" checked={isSelected} onChange={() => toggleSelection('vocab', index)} className="mt-1.5 w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer" />
         <div>
-          <span className="font-bold text-lg">{v.word}</span>
+          <span className="font-bold text-lg">{getDisplayIndex('vocab', index)}{v.word}</span>
           <div className="mt-2 text-lg">
             {isTeacherMode ? (
               <span className="text-red-600 font-bold underline decoration-red-600 decoration-2 underline-offset-4">{v.meaning}</span>
@@ -30,7 +39,8 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
       <div key={index} className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${isSelected ? 'border-blue-200 bg-white shadow-sm' : 'border-slate-200 bg-slate-50 opacity-40 grayscale hover:opacity-70'}`}>
         <input type="checkbox" checked={isSelected} onChange={() => toggleSelection('fillIn', index)} className="mt-1 w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer" />
         <div className="text-lg leading-loose">
-          {index + 1}. {parts.map((part, i) => (
+          <span className="font-bold mr-1">{getDisplayIndex('fillIn', index)}</span>
+          {parts.map((part, i) => (
             <React.Fragment key={i}>
               {part}
               {i < parts.length - 1 && (
@@ -52,7 +62,7 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
         <input type="checkbox" checked={isSelected} onChange={() => toggleSelection('questions', index)} className="mt-1 w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer" />
         <div className="flex-1">
           <div className="flex items-center flex-wrap gap-2 mb-3">
-            <span className="font-bold text-lg">{index + 1}. {q.q}</span>
+            <span className="font-bold text-lg">{getDisplayIndex('questions', index)}{q.q}</span>
             {isTeacherMode && <span className="text-sm bg-red-100 text-red-700 px-2.5 py-0.5 rounded-md font-bold shrink-0">【{q.type}】</span>}
           </div>
           {isTeacherMode ? (
@@ -94,20 +104,18 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
         <section>
           <h2 className="text-2xl font-bold mb-5 flex items-center gap-3 text-slate-800">
             <span className="bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-xl shadow-md">1</span>
-            任務一：讀讀看
+            課前任務 1、讀讀看
           </h2>
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-xl space-y-3">
             <p>(1) 先朗讀課文三遍，標示出標點符號。；！？。</p>
             <p>(2) 自然段有 {isTeacherMode ? <span className="text-red-600 font-bold px-2">{lesson.paragraphs}</span> : '＿＿＿'} 段。</p>
             <p>(3) 圈出不懂的語詞、找重點句、句型、修辭。劃線標註段落重點句。</p>
-            <div className="pt-2">
-              <p>(4) 結構說明：</p>
-              {isTeacherMode ? (
+            {isTeacherMode && (
+              <div className="pt-2">
+                <p>(4) 結構說明：</p>
                 <div className="text-red-600 font-bold mt-2 ml-6 leading-relaxed">{lesson.structure}</div>
-              ) : (
-                <div className="h-24 bg-slate-50 border border-dashed border-slate-300 rounded mt-2 ml-6"></div>
-              )}
-            </div>
+              </div>
+            )}
             {isTeacherMode && lesson.criteria && (
               <div className="pt-2">
                 <p>(5) 判定標準：</p>
@@ -122,7 +130,7 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
           <div className="flex justify-between items-center mb-5">
             <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-800">
               <span className="bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-xl shadow-md">2</span>
-              任務二：語詞解釋
+              課前任務 2、語詞解釋
             </h2>
             <span className="text-sm font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">點擊核取方塊可排除題目</span>
           </div>
@@ -136,7 +144,7 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
           <div className="flex justify-between items-center mb-5">
             <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-800">
               <span className="bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-xl shadow-md">3</span>
-              任務三：語詞選填
+              課前任務 3、語詞選填
             </h2>
             <span className="text-sm font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">點擊核取方塊可排除題目</span>
           </div>
@@ -155,11 +163,11 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
           <div className="flex justify-between items-center mb-5">
             <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-800">
               <span className="bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-xl shadow-md">4</span>
-              任務四：文意預習
+              課前任務 4、文意預習
             </h2>
             <span className="text-sm font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">點擊核取方塊可排除題目</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-5">
             {lesson.questions.map((q, index) => renderQuestion(q, index))}
           </div>
         </section>

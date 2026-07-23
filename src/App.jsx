@@ -65,7 +65,15 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans relative">
+      {/* Watermarks */}
+      <div className="fixed top-20 right-4 text-slate-300/80 text-sm font-bold z-50 pointer-events-none select-none tracking-widest">
+        網站建立自楊家驊老師
+      </div>
+      <div className="fixed bottom-4 right-4 text-slate-300/80 text-sm font-bold z-50 pointer-events-none select-none tracking-widest">
+        網站建立自楊家驊老師
+      </div>
+
       {/* Navbar */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
