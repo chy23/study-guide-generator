@@ -31,7 +31,11 @@ function App() {
       setSelections({
         vocab: new Set(currentLesson.vocab.map((_, i) => i)),
         fillIn: new Set(currentLesson.fillIn.map((_, i) => i)),
-        questions: new Set(currentLesson.questions.map((_, i) => i))
+        questions: new Set(
+          currentLesson.questions
+            .map((q, i) => (q.type === '提取訊息' || q.type === '推論訊息' ? i : -1))
+            .filter(i => i !== -1)
+        )
       });
     }
   }, [currentLesson]);
