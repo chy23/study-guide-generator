@@ -75,9 +75,21 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
       let h = 297;
       if (paperSize.toLowerCase() === 'b4') h = 353;
       if (paperSize.toLowerCase() === 'a3') h = 420;
-      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1414'><text x='50%' y='50%' transform='rotate(-45 500 707)' text-anchor='middle' font-size='87pt' font-weight='bold' font-style='italic' fill='gray' fill-opacity='0.25' font-family='sans-serif'>彙整自楊家驊老師</text></svg>`;
-      const encoded = encodeURIComponent(svg).replace(/'/g, '%27').replace(/"/g, '%22');
-      watermarkCSS = `background-image: url("data:image/svg+xml;charset=utf-8,${encoded}"); background-repeat: repeat-y; background-position: center top; background-size: 100% ${h}mm;`;
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = 1000;
+      canvas.height = 1414;
+      const ctx = canvas.getContext('2d');
+      ctx.translate(500, 707);
+      ctx.rotate(-45 * Math.PI / 180);
+      ctx.font = 'bold italic 87pt "標楷體", "BiauKai", "DFKai-SB", sans-serif';
+      ctx.fillStyle = 'rgba(128, 128, 128, 0.25)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('彙整自楊家驊老師', 0, 0);
+      const dataUrl = canvas.toDataURL('image/png');
+      
+      watermarkCSS = `background-image: url("${dataUrl}"); background-repeat: repeat-y; background-position: center top; background-size: 100% ${h}mm;`;
     }
   }
 
