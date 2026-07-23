@@ -51,7 +51,7 @@ export function getExportHTMLContent(lesson, selections, isTeacher, paperSize = 
     // Task 3
     let wordBankHtml = '';
     if (wordBank.length > 0) {
-      wordBankHtml = `<div style="border: 1px solid #000; padding: 15px; margin-bottom: 15px; text-align: center; font-size: 14pt;">${wordBank.join('&nbsp;&nbsp;&nbsp;&nbsp;')}</div>`;
+      wordBankHtml = `<div style="border: 1px solid #000; padding: 15px; margin-bottom: 15px; text-align: center; font-size: 14pt;">${wordBank.join(' ')}</div>`;
     }
 
     let fillInHtml = '';

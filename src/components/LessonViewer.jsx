@@ -157,7 +157,7 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
             <span className="text-sm font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">點擊核取方塊可排除題目</span>
           </div>
           {wordBank.length > 0 && (
-            <div className="border border-slate-400 rounded-xl p-5 mb-5 text-2xl leading-loose bg-white shadow-sm flex flex-wrap gap-8 justify-center">
+            <div className="border border-slate-400 rounded-xl p-5 mb-5 text-2xl leading-loose bg-white shadow-sm flex flex-wrap gap-2 justify-center">
               {wordBank.map((word, i) => <span key={i} className="font-bold">{word}</span>)}
             </div>
           )}
