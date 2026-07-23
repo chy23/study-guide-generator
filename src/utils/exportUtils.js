@@ -193,7 +193,13 @@ export function exportToWord(lesson, selections, filename, paperSize = 'A4', mar
       </xml><![endif]-->
       <style>
         body { font-family: '標楷體', 'BiauKai', 'DFKai-SB'; }
-        @page { size: ${paperSize}; margin: ${margin}; }
+        @page { 
+          size: ${paperSize}; 
+          margin-top: ${margin.top};
+          margin-bottom: ${margin.bottom};
+          margin-left: ${margin.left};
+          margin-right: ${margin.right};
+        }
       </style>
     </head><body>`;
   const footer = `</body></html>`;

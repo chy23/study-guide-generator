@@ -20,9 +20,9 @@ function App() {
 
 
   const margins = {
-    normal: '2.54cm 3.18cm 2.54cm 3.18cm',
-    moderate: '1.91cm 1.91cm 1.91cm 1.91cm',
-    narrow: '1.27cm 1.27cm 1.27cm 1.27cm'
+    normal: { top: '2.54cm', bottom: '2.54cm', left: '3.18cm', right: '3.18cm' },
+    moderate: { top: '1.91cm', bottom: '1.91cm', left: '1.91cm', right: '1.91cm' },
+    narrow: { top: '1.27cm', bottom: '1.27cm', left: '1.27cm', right: '1.27cm' }
   };
 
   // Initialize selections when lesson changes
