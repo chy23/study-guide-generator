@@ -121,7 +121,7 @@ export const lessonsData = [
   {
     id: 3,
     title: "孔子說的話",
-    author: "《論語》孔子的學生們",
+    author: "孔子的學生們《論語》",
     type: "語錄體",
     paragraphs: 6,
     parts: 3,
