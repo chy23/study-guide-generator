@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { FileText, FileDown, BookOpen, GraduationCap, Settings2, X } from 'lucide-react'
 import LessonViewer from './components/LessonViewer'
 import { lessonsData } from './data/lessonsData'
-import { exportToPDF, exportToWord } from './utils/exportUtils'
+import { exportToWord } from './utils/exportUtils'
 
 function App() {
   const [currentLesson, setCurrentLesson] = useState(lessonsData[0]);
@@ -17,7 +17,7 @@ function App() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [paperSize, setPaperSize] = useState('A4');
   const [marginSetting, setMarginSetting] = useState('normal');
-  const [password, setPassword] = useState('');
+
 
   const margins = {
     normal: '2.54cm 3.18cm',
@@ -60,17 +60,10 @@ function App() {
     const filename = `第${currentLesson.id}課_${currentLesson.title}_${isTeacherMode ? '教用版' : '學用版'}`;
     const margin = margins[marginSetting];
     
-    if (password === '@6912') {
-      // With password: Export to Word, no watermark
-      exportToWord(currentLesson, selections, filename, paperSize, margin, false);
-    } else {
-      // Without password: Export to PDF, with watermark
-      const marginMm = marginSetting === 'normal' ? 25.4 : marginSetting === 'moderate' ? 19.1 : 12.7;
-      exportToPDF(currentLesson, selections, filename, paperSize.toLowerCase(), marginMm, true);
-    }
+    // Export to Word without watermark
+    exportToWord(currentLesson, selections, filename, paperSize, margin, false);
     
     setShowExportModal(false);
-    setPassword('');
   };
 
   return (
@@ -122,8 +115,8 @@ function App() {
               onClick={handleOpenExportModal}
               className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-5 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm"
             >
-              <FileDown className="w-4 h-4" />
-              匯出講義
+              <FileText className="w-4 h-4" />
+              匯出 Word
             </button>
           </div>
         </div>
@@ -147,8 +140,8 @@ function App() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
             <div className="flex justify-between items-center p-6 border-b border-slate-100">
               <h3 className="text-xl font-bold flex items-center gap-2">
-                <FileDown className="w-5 h-5 text-blue-600" />
-                匯出設定
+                <FileText className="w-5 h-5 text-blue-600" />
+                匯出 Word 設定
               </h3>
               <button onClick={() => setShowExportModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
                 <X className="w-6 h-6" />
@@ -190,16 +183,7 @@ function App() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">講義解鎖密碼 (選填)</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="輸入密碼可匯出無浮水印之 Word 檔"
-                  className="w-full px-4 py-2 border-2 border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-blue-600 transition-colors"
-                />
-              </div>
+
             </div>
 
             <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
@@ -213,7 +197,7 @@ function App() {
                 onClick={handleConfirmExport}
                 className="px-6 py-2 rounded-lg font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-sm transition-colors"
               >
-                確認匯出 ({password === '@6912' ? 'Word' : 'PDF'})
+                確認匯出
               </button>
             </div>
           </div>

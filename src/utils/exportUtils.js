@@ -1,4 +1,3 @@
-import html2pdf from 'html2pdf.js';
 
 function shuffleArray(array) {
   const newArr = [...array];
@@ -9,7 +8,7 @@ function shuffleArray(array) {
   return newArr;
 }
 
-export function getExportHTMLContent(lesson, selections, isTeacher, showWatermark = true, paperSize = 'a4', exportFormat = 'word') {
+export function getExportHTMLContent(lesson, selections, isTeacher, paperSize = 'a4') {
   // Filter selected items based on ID or index. 
   // Let's assume selections is an object with sets of selected indices for each type.
   const selectedVocab = lesson.vocab.filter((_, i) => selections.vocab.has(i));
@@ -21,56 +20,6 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
   const wordBankAnswers = [...selectedFillIn.map(item => item.answer), ...distractors.map(item => item.answer)];
 
   const wordBank = shuffleArray(wordBankAnswers);
-  
-  const buildWatermarkDiv = (id, spid) => `
-      <div style="mso-element:header" id="${id}">
-        <p class="MsoHeader">
-          <!--[if gte vml 1]>
-          <v:shapetype id="_x0000_t136" coordsize="21600,21600" o:spt="136" adj="10800" path="m@7,l@8,m@5,21600l@6,21600e">
-           <v:formulas>
-            <v:f eqn="sum #0 0 10800"/>
-            <v:f eqn="prod #0 2 1"/>
-            <v:f eqn="sum 21600 0 @1"/>
-            <v:f eqn="sum 0 0 @2"/>
-            <v:f eqn="sum 21600 0 @3"/>
-            <v:f eqn="if @0 @3 0"/>
-            <v:f eqn="if @0 21600 @1"/>
-            <v:f eqn="if @0 0 @2"/>
-            <v:f eqn="if @0 @4 21600"/>
-            <v:f eqn="mid @5 @6"/>
-            <v:f eqn="mid @8 @5"/>
-            <v:f eqn="mid @7 @8"/>
-            <v:f eqn="mid @6 @7"/>
-            <v:f eqn="sum @6 0 @5"/>
-           </v:formulas>
-           <v:path textpathok="t" o:connecttype="custom" o:connectlocs="@9,0;@10,10800;@11,21600;@12,10800" o:connectangles="270,180,90,0"/>
-           <v:textpath on="t" fitshape="t"/>
-           <v:handles>
-            <v:h position="#0,bottomRight" xrange="6629,14971"/>
-           </v:handles>
-           <o:lock v:ext="edit" text="t" shapetype="t"/>
-          </v:shapetype>
-          <v:shape id="WaterMarkObject${id}" o:spid="_x0000_s${spid}" type="#_x0000_t136"
-           style="position:absolute;left:0;text-align:left;margin-left:-20pt;
-           margin-top:200pt;width:500pt;height:200pt;rotation:-45;z-index:-251657216;
-           mso-position-horizontal:center;mso-position-horizontal-relative:margin;
-           mso-position-vertical:center;mso-position-vertical-relative:margin"
-           fillcolor="silver" stroked="f">
-           <v:fill opacity=".25"/>
-           <v:textpath style="font-family:'標楷體';font-size:87pt;font-weight:bold;font-style:italic" string="彙整自楊家驊老師"/>
-           <o:lock v:ext="edit" position="t" selection="t" rotation="t" size="t" text="t" delete="t"/>
-          </v:shape>
-          <![endif]-->
-        </p>
-      </div>
-  `;
-
-  let watermarkHtml = '';
-  let watermarkCSS = '';
-  
-  if (showWatermark && exportFormat === 'word') {
-    watermarkHtml = buildWatermarkDiv('h1', '101') + buildWatermarkDiv('h2', '102') + buildWatermarkDiv('h3', '103');
-  }
 
   const generatePage = (isTeacher) => {
     // Task 1
@@ -147,8 +96,7 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
     }
 
     return `
-      ${watermarkHtml}
-      <div style="font-family: '標楷體', 'BiauKai', 'DFKai-SB'; margin: 0 auto; width: 100%; max-width: 800px; color: #000; line-height: 1.6; font-size: 14pt; min-height: 100vh; ${watermarkCSS}">
+      <div style="font-family: '標楷體', 'BiauKai', 'DFKai-SB'; margin: 0 auto; width: 100%; max-width: 800px; color: #000; line-height: 1.6; font-size: 14pt; min-height: 100vh;">
         
         <div style="text-align: center; font-size: 18pt; font-weight: bold; margin-bottom: 10px;">
           115 六上國語預習講義 翰林版 第 ${lesson.id} 課 &nbsp;&nbsp;${lesson.title}&nbsp;&nbsp; 作者 ： ${lesson.author}
@@ -206,69 +154,46 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
   `;
 }
 
-
-export function exportToPDF(lesson, selections, filename, paperSize = 'a4', margin = 10, showWatermark = true) {
-  // Pass showWatermark = false to HTML so it doesn't generate CSS watermarks
-  const htmlContent = getExportHTMLContent(lesson, selections, false, false, paperSize, 'pdf');
-
-  const element = document.createElement('div');
-  element.innerHTML = htmlContent;
-
-  const opt = {
-    margin:       margin,
-    filename:     filename || `${lesson.title}_預習講義.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'mm', format: paperSize, orientation: 'portrait' }
-  };
-
-  if (showWatermark) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1000;
-    canvas.height = 1414;
-    const ctx = canvas.getContext('2d');
-    ctx.translate(500, 707);
-    ctx.rotate(-45 * Math.PI / 180);
-    ctx.font = 'bold italic 87pt "標楷體", "BiauKai", "DFKai-SB", sans-serif';
-    ctx.fillStyle = 'rgba(128, 128, 128, 0.25)';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('彙整自楊家驊老師', 0, 0);
-    const dataUrl = canvas.toDataURL('image/png');
-
-    html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
-      const totalPages = pdf.internal.getNumberOfPages();
-      for (let i = 1; i <= totalPages; i++) {
-        pdf.setPage(i);
-        const width = pdf.internal.pageSize.getWidth();
-        const height = pdf.internal.pageSize.getHeight();
-        pdf.addImage(dataUrl, 'PNG', 0, 0, width, height);
-      }
-      pdf.save(opt.filename);
-    });
-  } else {
-    html2pdf().set(opt).from(element).save();
-  }
-}
-
-export function exportToWord(lesson, selections, filename, paperSize = 'A4', margin = '2cm', showWatermark = true) {
-  const htmlContent = getExportHTMLContent(lesson, selections, false, showWatermark, paperSize, 'word');
+export function exportToWord(lesson, selections, filename, paperSize = 'A4', margin = '2cm') {
+  const htmlContent = getExportHTMLContent(lesson, selections, false, paperSize);
   
   const header = `<html xmlns:v="urn:schemas-microsoft-com:vml"
     xmlns:o="urn:schemas-microsoft-com:office:office"
     xmlns:w="urn:schemas-microsoft-com:office:word"
+    xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
     xmlns="http://www.w3.org/TR/REC-html40">
     <head>
-      <meta charset='utf-8'>
+      <meta charset="utf-8">
       <!--[if gte mso 9]><xml>
        <w:WordDocument>
         <w:View>Print</w:View>
-        <w:Zoom>100</w:Zoom>
+        <w:TrackMoves>false</w:TrackMoves>
+        <w:TrackFormatting/>
+        <w:ValidateAgainstSchemas/>
+        <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+        <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+        <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+        <w:DoNotPromoteQF/>
+        <w:LidThemeOther>EN-US</w:LidThemeOther>
+        <w:LidThemeAsian>ZH-TW</w:LidThemeAsian>
+        <w:LidThemeComplexScript>X-NONE</w:LidThemeComplexScript>
+        <w:Compatibility>
+         <w:BreakWrappedTables/>
+         <w:SnapToGridInCell/>
+         <w:WrapTextWithPunct/>
+         <w:UseAsianBreakRules/>
+         <w:DontGrowAutofit/>
+         <w:SplitPgBreakAndParaMark/>
+         <w:EnableOpenTypeKerning/>
+         <w:DontFlipMirrorIndents/>
+         <w:OverrideTableStyleHps/>
+         <w:UseFELayout/>
+        </w:Compatibility>
        </w:WordDocument>
       </xml><![endif]-->
       <style>
         body { font-family: '標楷體', 'BiauKai', 'DFKai-SB'; }
-        @page { size: ${paperSize}; margin: ${margin}; mso-header: h1; mso-even-header: h2; mso-first-header: h3; }
+        @page { size: ${paperSize}; margin: ${margin}; }
       </style>
     </head><body>`;
   const footer = `</body></html>`;
