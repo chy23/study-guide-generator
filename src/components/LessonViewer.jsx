@@ -18,14 +18,13 @@ const LessonViewer = ({ lesson, selections, toggleSelection, isTeacherMode }) =>
       <div key={index} className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${isSelected ? 'border-blue-200 bg-white shadow-sm' : 'border-slate-200 bg-slate-50 opacity-40 grayscale hover:opacity-70'}`}>
         <input type="checkbox" checked={isSelected} onChange={() => toggleSelection('vocab', index)} className="mt-1.5 w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer" />
         <div>
-          <span className="text-lg">{getDisplayIndex('vocab', index)}{v.meaning}</span>
-          <div className="mt-2 text-lg font-bold">
-            {isTeacherMode ? (
-              <span className="text-red-600 underline decoration-red-600 decoration-2 underline-offset-4 tracking-widest">{v.word}</span>
-            ) : (
-              <span className="text-slate-400">（　　　　　　）</span>
-            )}
-          </div>
+          <span className="text-lg font-bold mr-1">{getDisplayIndex('vocab', index)}</span>
+          {isTeacherMode ? (
+            <span className="text-red-600 font-bold underline decoration-red-600 decoration-2 underline-offset-4 tracking-widest mr-1">{v.word}</span>
+          ) : (
+            <span className="text-slate-400 mr-1">（　　　　　）</span>
+          )}
+          <span className="text-lg">：{v.meaning}</span>
         </div>
       </div>
     );
