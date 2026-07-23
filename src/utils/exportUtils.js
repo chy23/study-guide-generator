@@ -68,29 +68,8 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
   let watermarkHtml = '';
   let watermarkCSS = '';
   
-  if (showWatermark) {
-    if (exportFormat === 'word') {
-      watermarkHtml = buildWatermarkDiv('h1', '101') + buildWatermarkDiv('h2', '102') + buildWatermarkDiv('h3', '103');
-    } else if (exportFormat === 'pdf') {
-      let h = 297;
-      if (paperSize.toLowerCase() === 'b4') h = 353;
-      if (paperSize.toLowerCase() === 'a3') h = 420;
-      
-      const canvas = document.createElement('canvas');
-      canvas.width = 1000;
-      canvas.height = 1414;
-      const ctx = canvas.getContext('2d');
-      ctx.translate(500, 707);
-      ctx.rotate(-45 * Math.PI / 180);
-      ctx.font = 'bold italic 87pt "標楷體", "BiauKai", "DFKai-SB", sans-serif';
-      ctx.fillStyle = 'rgba(128, 128, 128, 0.25)';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('彙整自楊家驊老師', 0, 0);
-      const dataUrl = canvas.toDataURL('image/png');
-      
-      watermarkCSS = `background-image: url("${dataUrl}"); background-repeat: repeat-y; background-position: center top; background-size: 100% ${h}mm;`;
-    }
+  if (showWatermark && exportFormat === 'word') {
+    watermarkHtml = buildWatermarkDiv('h1', '101') + buildWatermarkDiv('h2', '102') + buildWatermarkDiv('h3', '103');
   }
 
   const generatePage = (isTeacher) => {
@@ -229,7 +208,8 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
 
 
 export function exportToPDF(lesson, selections, filename, paperSize = 'a4', margin = 10, showWatermark = true) {
-  const htmlContent = getExportHTMLContent(lesson, selections, false, showWatermark, paperSize, 'pdf');
+  // Pass showWatermark = false to HTML so it doesn't generate CSS watermarks
+  const htmlContent = getExportHTMLContent(lesson, selections, false, false, paperSize, 'pdf');
 
   const element = document.createElement('div');
   element.innerHTML = htmlContent;
@@ -242,7 +222,32 @@ export function exportToPDF(lesson, selections, filename, paperSize = 'a4', marg
     jsPDF:        { unit: 'mm', format: paperSize, orientation: 'portrait' }
   };
 
-  html2pdf().set(opt).from(element).save();
+  if (showWatermark) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1000;
+    canvas.height = 1414;
+    const ctx = canvas.getContext('2d');
+    ctx.translate(500, 707);
+    ctx.rotate(-45 * Math.PI / 180);
+    ctx.font = 'bold italic 87pt "標楷體", "BiauKai", "DFKai-SB", sans-serif';
+    ctx.fillStyle = 'rgba(128, 128, 128, 0.25)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('彙整自楊家驊老師', 0, 0);
+    const dataUrl = canvas.toDataURL('image/png');
+
+    html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
+      const totalPages = pdf.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        const width = pdf.internal.pageSize.getWidth();
+        const height = pdf.internal.pageSize.getHeight();
+        pdf.addImage(dataUrl, 'PNG', 0, 0, width, height);
+      }
+    }).save();
+  } else {
+    html2pdf().set(opt).from(element).save();
+  }
 }
 
 export function exportToWord(lesson, selections, filename, paperSize = 'A4', margin = '2cm', showWatermark = true) {
