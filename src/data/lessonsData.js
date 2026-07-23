@@ -121,7 +121,7 @@ export const lessonsData = [
   {
     id: 3,
     title: "孔子說的話",
-    author: "論語",
+    author: "《論語》孔子的學生們",
     type: "語錄體",
     paragraphs: 6,
     parts: 3,
@@ -311,7 +311,7 @@ export const lessonsData = [
   {
     id: 6,
     title: "善用自嘲，展現幽默",
-    author: "無",
+    author: "陳靜婷",
     type: "議論",
     paragraphs: 8,
     parts: 3,
