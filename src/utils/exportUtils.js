@@ -22,10 +22,8 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
 
   const wordBank = shuffleArray(wordBankAnswers);
   
-  let vmlWatermark = '';
-  if (showWatermark) {
-    vmlWatermark = `
-      <div style="mso-element:header" id="h1">
+  const buildWatermarkDiv = (id, spid) => `
+      <div style="mso-element:header" id="${id}">
         <p class="MsoHeader">
           <!--[if gte vml 1]>
           <v:shapetype id="_x0000_t136" coordsize="21600,21600" o:spt="136" adj="10800" path="m@7,l@8,m@5,21600l@6,21600e">
@@ -52,7 +50,7 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
            </v:handles>
            <o:lock v:ext="edit" text="t" shapetype="t"/>
           </v:shapetype>
-          <v:shape id="WaterMarkObject" o:spid="_x0000_s101" type="#_x0000_t136"
+          <v:shape id="WaterMarkObject${id}" o:spid="_x0000_s${spid}" type="#_x0000_t136"
            style="position:absolute;left:0;text-align:left;margin-left:-20pt;
            margin-top:200pt;width:500pt;height:200pt;rotation:-45;z-index:-251657216;
            mso-position-horizontal:center;mso-position-horizontal-relative:margin;
@@ -64,7 +62,11 @@ export function getExportHTMLContent(lesson, selections, isTeacher, showWatermar
           <![endif]-->
         </p>
       </div>
-    `;
+  `;
+
+  let vmlWatermark = '';
+  if (showWatermark) {
+    vmlWatermark = buildWatermarkDiv('h1', '101') + buildWatermarkDiv('h2', '102') + buildWatermarkDiv('h3', '103');
   }
 
   const generatePage = (isTeacher) => {
@@ -219,7 +221,7 @@ export function exportToWord(lesson, selections, filename, paperSize = 'A4', mar
       </xml><![endif]-->
       <style>
         body { font-family: '標楷體', 'BiauKai', 'DFKai-SB'; }
-        @page { size: ${paperSize}; margin: ${margin}; mso-header: h1; }
+        @page { size: ${paperSize}; margin: ${margin}; mso-header: h1; mso-even-header: h2; mso-first-header: h3; }
       </style>
     </head><body>`;
   const footer = `</body></html>`;
