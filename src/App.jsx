@@ -18,6 +18,7 @@ function App() {
   const [exportType, setExportType] = useState('pdf');
   const [paperSize, setPaperSize] = useState('A4');
   const [marginSetting, setMarginSetting] = useState('normal');
+  const [password, setPassword] = useState('');
 
   const margins = {
     normal: '2.54cm',
@@ -58,14 +59,18 @@ function App() {
   };
 
   const handleConfirmExport = () => {
+    const filename = `第${currentLesson.id}課_${currentLesson.title}_${isTeacherMode ? '教用版' : '學用版'}`;
+    const showWatermark = password !== '@6912';
     const margin = margins[marginSetting];
+    
     if (exportType === 'pdf') {
       const marginMm = marginSetting === 'normal' ? 25.4 : marginSetting === 'moderate' ? 19.1 : 12.7;
-      exportToPDF(currentLesson, selections, null, paperSize.toLowerCase(), marginMm);
+      exportToPDF(currentLesson, selections, filename, paperSize.toLowerCase(), marginMm, showWatermark);
     } else {
-      exportToWord(currentLesson, selections, null, paperSize, margin);
+      exportToWord(currentLesson, selections, filename, paperSize, margin, showWatermark);
     }
     setShowExportModal(false);
+    setPassword('');
   };
 
   return (
@@ -191,6 +196,17 @@ function App() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">浮水印密碼 (選填)</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="輸入密碼可消除浮水印"
+                  className="w-full px-4 py-2 border-2 border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-blue-600 transition-colors"
+                />
               </div>
             </div>
 

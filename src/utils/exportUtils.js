@@ -9,7 +9,7 @@ function shuffleArray(array) {
   return newArr;
 }
 
-export function getExportHTMLContent(lesson, selections, isTeacherMode) {
+export function getExportHTMLContent(lesson, selections, isTeacher, showWatermark = true, paperSize = 'a4') {
   // Filter selected items based on ID or index. 
   // Let's assume selections is an object with sets of selected indices for each type.
   const selectedVocab = lesson.vocab.filter((_, i) => selections.vocab.has(i));
@@ -21,6 +21,16 @@ export function getExportHTMLContent(lesson, selections, isTeacherMode) {
   const wordBankAnswers = [...selectedFillIn.map(item => item.answer), ...distractors.map(item => item.answer)];
 
   const wordBank = shuffleArray(wordBankAnswers);
+  
+  let watermarkCSS = '';
+  if (showWatermark) {
+    let h = 297;
+    if (paperSize.toLowerCase() === 'b4') h = 353;
+    if (paperSize.toLowerCase() === 'a3') h = 420;
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1414'><text x='50%' y='50%' transform='rotate(-45 500 707)' text-anchor='middle' font-size='87pt' font-weight='bold' font-style='italic' fill='gray' fill-opacity='0.25' font-family='sans-serif'>彙整自楊家驊老師</text></svg>`;
+    const encoded = encodeURIComponent(svg).replace(/'/g, '%27').replace(/"/g, '%22');
+    watermarkCSS = `background-image: url("data:image/svg+xml;charset=utf-8,${encoded}"); background-repeat: repeat-y; background-position: center top; background-size: 100% ${h}mm;`;
+  }
 
   const generatePage = (isTeacher) => {
     // Task 1
@@ -98,7 +108,7 @@ export function getExportHTMLContent(lesson, selections, isTeacherMode) {
     }
 
     return `
-      <div style="font-family: '標楷體', 'BiauKai', 'DFKai-SB'; margin: 0 auto; width: 100%; max-width: 800px; color: #000; line-height: 1.6; font-size: 14pt;">
+      <div style="font-family: '標楷體', 'BiauKai', 'DFKai-SB'; margin: 0 auto; width: 100%; max-width: 800px; color: #000; line-height: 1.6; font-size: 14pt; min-height: 100vh; ${watermarkCSS}">
         
         <div style="text-align: center; font-size: 18pt; font-weight: bold; margin-bottom: 10px;">
           115 六上國語預習講義 翰林版 第 ${lesson.id} 課 &nbsp;&nbsp;${lesson.title}&nbsp;&nbsp; 作者 ： ${lesson.author}
@@ -156,8 +166,8 @@ export function getExportHTMLContent(lesson, selections, isTeacherMode) {
   `;
 }
 
-export function exportToPDF(lesson, selections, filename, paperSize = 'a4', margin = 10) {
-  const htmlContent = getExportHTMLContent(lesson, selections, false); // generatePage internally does both
+export function exportToPDF(lesson, selections, filename, paperSize = 'a4', margin = 10, showWatermark = true) {
+  const htmlContent = getExportHTMLContent(lesson, selections, false, showWatermark, paperSize); // generatePage internally does both
 
   const element = document.createElement('div');
   element.innerHTML = htmlContent;
@@ -173,8 +183,8 @@ export function exportToPDF(lesson, selections, filename, paperSize = 'a4', marg
   html2pdf().set(opt).from(element).save();
 }
 
-export function exportToWord(lesson, selections, filename, paperSize = 'A4', margin = '2cm') {
-  const htmlContent = getExportHTMLContent(lesson, selections, false);
+export function exportToWord(lesson, selections, filename, paperSize = 'A4', margin = '2cm', showWatermark = true) {
+  const htmlContent = getExportHTMLContent(lesson, selections, false, showWatermark, paperSize);
   
   const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
     <head>
