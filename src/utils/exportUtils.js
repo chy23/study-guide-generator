@@ -193,18 +193,19 @@ export function exportToWord(lesson, selections, filename, paperSize = 'A4', mar
       </xml><![endif]-->
       <style>
         body { font-family: '標楷體', 'BiauKai', 'DFKai-SB'; }
-        @page { 
+        @page WordSection1 { 
           size: ${paperSize}; 
-          margin-top: ${margin.top};
-          margin-bottom: ${margin.bottom};
-          margin-left: ${margin.left};
-          margin-right: ${margin.right};
+          margin: ${margin.top} ${margin.right} ${margin.bottom} ${margin.left};
+          mso-header-margin: 1.27cm;
+          mso-footer-margin: 1.27cm;
+          mso-paper-source: 0;
         }
+        div.WordSection1 { page: WordSection1; }
       </style>
     </head><body>`;
   const footer = `</body></html>`;
   
-  const sourceHTML = header + htmlContent + footer;
+  const sourceHTML = header + '<div class="WordSection1">' + htmlContent + '</div>' + footer;
   
   const blob = new Blob(['\ufeff', sourceHTML], {
     type: 'application/msword'
