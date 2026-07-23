@@ -37,9 +37,9 @@ export function getExportHTMLContent(lesson, selections, isTeacherMode) {
       const formatVocab = (v, idx) => {
         if (!v) return '';
         const word = isTeacher 
-          ? `<span style="color:red; font-weight:bold;">${v.word}</span>` 
-          : '＿＿＿＿＿＿';
-        return `(${idx}) ${word} ：${v.meaning}`;
+          ? `<span style="color:red; font-weight:bold; letter-spacing: 2px;">${v.word}</span>` 
+          : '（　　　　　）';
+        return `(${idx}) ${word}：${v.meaning}`;
       };
 
       vocabRows += `
