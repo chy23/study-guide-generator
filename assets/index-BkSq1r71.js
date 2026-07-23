@@ -135,7 +135,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
           <![endif]-->
         </p>
       </div>
-  `,f=``,p=``;if(r){if(a===`word`)f=d(`h1`,`101`)+d(`h2`,`102`)+d(`h3`,`103`);else if(a===`pdf`){let e=297;i.toLowerCase()===`b4`&&(e=353),i.toLowerCase()===`a3`&&(e=420);let t=document.createElement(`canvas`);t.width=1e3,t.height=1414;let n=t.getContext(`2d`);n.translate(500,707),n.rotate(-45*Math.PI/180),n.font=`bold italic 87pt "標楷體", "BiauKai", "DFKai-SB", sans-serif`,n.fillStyle=`rgba(128, 128, 128, 0.25)`,n.textAlign=`center`,n.textBaseline=`middle`,n.fillText(`彙整自楊家驊老師`,0,0),p=`background-image: url("${t.toDataURL(`image/png`)}"); background-repeat: repeat-y; background-position: center top; background-size: 100% ${e}mm;`}}let m=t=>{let n=t?`<span style="color:red; font-weight:bold;">${e.paragraphs}</span>`:`＿＿＿`,r=t?`<div style="color:red; font-weight:bold; margin-top: 5px; line-height: 1.6;">${e.criteria||``}</div>`:``,i=``;for(let e=0;e<o.length;e+=2){let n=o[e],r=o[e+1],a=(e,n)=>e?`(${n}) ${t?`<span style="color:red; font-weight:bold; letter-spacing: 2px;">${e.word}</span>`:`（　　　　　）`}：${e.meaning}`:``;i+=`
+  `,f=``;r&&a===`word`&&(f=d(`h1`,`101`)+d(`h2`,`102`)+d(`h3`,`103`));let p=t=>{let n=t?`<span style="color:red; font-weight:bold;">${e.paragraphs}</span>`:`＿＿＿`,r=t?`<div style="color:red; font-weight:bold; margin-top: 5px; line-height: 1.6;">${e.criteria||``}</div>`:``,i=``;for(let e=0;e<o.length;e+=2){let n=o[e],r=o[e+1],a=(e,n)=>e?`(${n}) ${t?`<span style="color:red; font-weight:bold; letter-spacing: 2px;">${e.word}</span>`:`（　　　　　）`}：${e.meaning}`:``;i+=`
         <tr>
           <td style="width:50%; padding: 8px 8px 8px 0; vertical-align: top;">${a(n,e+1)}</td>
           <td style="width:50%; padding: 8px 8px 8px 0; vertical-align: top;">${a(r,e+2)}</td>
@@ -147,7 +147,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         </tr>
       `}return`
       ${f}
-      <div style="font-family: '標楷體', 'BiauKai', 'DFKai-SB'; margin: 0 auto; width: 100%; max-width: 800px; color: #000; line-height: 1.6; font-size: 14pt; min-height: 100vh; ${p}">
+      <div style="font-family: '標楷體', 'BiauKai', 'DFKai-SB'; margin: 0 auto; width: 100%; max-width: 800px; color: #000; line-height: 1.6; font-size: 14pt; min-height: 100vh; ">
         
         <div style="text-align: center; font-size: 18pt; font-weight: bold; margin-bottom: 10px;">
           115 六上國語預習講義 翰林版 第 ${e.id} 課 &nbsp;&nbsp;${e.title}&nbsp;&nbsp; 作者 ： ${e.author}
@@ -191,11 +191,11 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       </div>
     `};return`
     <div class="export-container">
-      ${m(!1)}
+      ${p(!1)}
       <div style="page-break-after: always; height: 0;"></div>
-      ${m(!0)}
+      ${p(!0)}
     </div>
-  `}function H(e,t,n,r=`a4`,i=10,a=!0){let o=V(e,t,!1,a,r,`pdf`),s=document.createElement(`div`);s.innerHTML=o;let c={margin:i,filename:n||`${e.title}_預習講義.pdf`,image:{type:`jpeg`,quality:.98},html2canvas:{scale:2},jsPDF:{unit:`mm`,format:r,orientation:`portrait`}};(0,z.default)().set(c).from(s).save()}function U(e,t,n,r=`A4`,i=`2cm`,a=!0){let o=V(e,t,!1,a,r,`word`),s=`<html xmlns:v="urn:schemas-microsoft-com:vml"
+  `}function H(e,t,n,r=`a4`,i=10,a=!0){let o=V(e,t,!1,!1,r,`pdf`),s=document.createElement(`div`);s.innerHTML=o;let c={margin:i,filename:n||`${e.title}_預習講義.pdf`,image:{type:`jpeg`,quality:.98},html2canvas:{scale:2},jsPDF:{unit:`mm`,format:r,orientation:`portrait`}};if(a){let e=document.createElement(`canvas`);e.width=1e3,e.height=1414;let t=e.getContext(`2d`);t.translate(500,707),t.rotate(-45*Math.PI/180),t.font=`bold italic 87pt "標楷體", "BiauKai", "DFKai-SB", sans-serif`,t.fillStyle=`rgba(128, 128, 128, 0.25)`,t.textAlign=`center`,t.textBaseline=`middle`,t.fillText(`彙整自楊家驊老師`,0,0);let n=e.toDataURL(`image/png`);(0,z.default)().set(c).from(s).toPdf().get(`pdf`).then(function(e){let t=e.internal.getNumberOfPages();for(let r=1;r<=t;r++){e.setPage(r);let t=e.internal.pageSize.getWidth(),i=e.internal.pageSize.getHeight();e.addImage(n,`PNG`,0,0,t,i)}}).save()}else(0,z.default)().set(c).from(s).save()}function U(e,t,n,r=`A4`,i=`2cm`,a=!0){let o=V(e,t,!1,a,r,`word`),s=`<html xmlns:v="urn:schemas-microsoft-com:vml"
     xmlns:o="urn:schemas-microsoft-com:office:office"
     xmlns:w="urn:schemas-microsoft-com:office:word"
     xmlns="http://www.w3.org/TR/REC-html40">
