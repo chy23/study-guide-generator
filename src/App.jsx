@@ -20,9 +20,9 @@ function App() {
 
 
   const margins = {
+    narrow: { top: '1.27cm', bottom: '1.27cm', left: '1.27cm', right: '1.27cm' },
     normal: { top: '2.54cm', bottom: '2.54cm', left: '3.18cm', right: '3.18cm' },
-    moderate: { top: '1.91cm', bottom: '1.91cm', left: '1.91cm', right: '1.91cm' },
-    narrow: { top: '1.27cm', bottom: '1.27cm', left: '1.27cm', right: '1.27cm' }
+    wide: { top: '2.54cm', bottom: '2.54cm', left: '5.08cm', right: '5.08cm' }
   };
 
   // Initialize selections when lesson changes
@@ -169,9 +169,9 @@ function App() {
                 <label className="block text-sm font-bold text-slate-700 mb-2">邊界寬度</label>
                 <div className="grid grid-cols-3 gap-3">
                   {[
+                    { id: 'narrow', label: '窄' },
                     { id: 'normal', label: '標準' },
-                    { id: 'moderate', label: '中等' },
-                    { id: 'narrow', label: '窄' }
+                    { id: 'wide', label: '寬' }
                   ].map(margin => (
                     <button
                       key={margin.id}
