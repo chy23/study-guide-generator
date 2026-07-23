@@ -244,7 +244,8 @@ export function exportToPDF(lesson, selections, filename, paperSize = 'a4', marg
         const height = pdf.internal.pageSize.getHeight();
         pdf.addImage(dataUrl, 'PNG', 0, 0, width, height);
       }
-    }).save();
+      pdf.save(opt.filename);
+    });
   } else {
     html2pdf().set(opt).from(element).save();
   }
