@@ -119,10 +119,12 @@ function App() {
               <FileText className="w-4 h-4" />
               匯出 Word
             </button>
-            <div className="hidden lg:block text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-1.5 text-right leading-tight ml-3 font-medium tracking-wide shadow-sm">
+            <div className="hidden lg:block text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-md px-3 py-1.5 text-right leading-tight ml-3 font-medium tracking-wide shadow-sm">
               學習單資料取自「翰林出版社」<br/>
               網站內容僅限用於孩子學習使用<br/>
-              <span className="text-red-600 font-bold">切勿用於商業行為</span>
+              <span className="text-red-700 font-black text-[12px] bg-red-100/90 px-1.5 py-0.5 rounded inline-block mt-0.5 border border-red-200 shadow-2xs">
+                ⚠️ 切勿用於商業行為
+              </span>
             </div>
           </div>
         </div>
