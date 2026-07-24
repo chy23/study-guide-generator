@@ -114,11 +114,16 @@ function App() {
 
             <button 
               onClick={handleOpenExportModal}
-              className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-5 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm"
+              className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-5 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm whitespace-nowrap"
             >
               <FileText className="w-4 h-4" />
               匯出 Word
             </button>
+            <div className="hidden lg:block text-[10px] text-slate-400 text-right leading-tight ml-2 font-medium tracking-wide border-l border-slate-200 pl-4">
+              學習單資料取自「翰林出版社」<br/>
+              網站內容僅限用於孩子學習使用<br/>
+              切勿用於商業行為
+            </div>
           </div>
         </div>
       </header>
